@@ -3,12 +3,12 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
 
-Transform sounds smoothly from one timbre to another using AI-powered latent space interpolation.
+Transform sounds smoothly from one timbre to another using latent space interpolation.
 
 ## Features
 
-- Morph between two audio timbres (piano → violin, voice → synth, etc.)
-- **Model-agnostic architecture**: designed to work with any audio autoencoder
+- Morph between two audio files (piano → violin, voice → synth, etc.)
+- Model-agnostic architecture: designed to work with any audio autoencoder
 - Latent space trajectory visualization (PCA, t-SNE, UMAP)
 - Simple Python API
 - Audio utilities (resampling, crossfade, normalization)
@@ -26,6 +26,32 @@ git clone https://github.com/music-pal/timbre-morpher.git
 cd timbre-morpher
 pip install -e .
 ```
+
+## Audio Demo
+
+Morphing from piano to violin using [`basic_morph.py`](examples/basic_morph.py):
+
+<!-- markdownlint-disable MD033 -->
+<table>
+  <tr>
+    <th>Source (Piano)</th>
+    <th>Target (Violin)</th>
+  </tr>
+  <tr>
+    <td><audio controls src="examples/audio/piano.wav"></audio></td>
+    <td><audio controls src="examples/audio/violin.wav"></audio></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th>Morphed (10 steps, concatenated with crossfade)</th>
+  </tr>
+  <tr>
+    <td><audio controls src="examples/audio/piano_to_violin_morph.wav"></audio></td>
+  </tr>
+</table>
+<!-- markdownlint-enable MD033 -->
 
 ## Quick Start
 
@@ -76,21 +102,25 @@ morpher.save_sequence(result, "output/")
 morpher.save_concatenated(result, "morph_full.wav", crossfade_ms=50)
 ```
 
-## Available RAVE Models
+## Available Models
 
-RAVE pretrained models are downloaded automatically from IRCAM on first use:
+### RAVE
 
-| Model | Best For |
-|-------|----------|
-| `musicnet` | Classical instruments (piano, violin, cello) |
-| `sol_ordinario` | Orchestral (IRCAM Studio OnLine) |
-| `sol_full` | Full orchestral range |
-| `vintage` | General vintage music |
-| `VCTK` | Speech/voice |
-| `percussion` | Drums and percussion |
+[RAVE](https://github.com/acids-ircam/RAVE) (Realtime Audio Variational autoEncoder) is a fast neural audio synthesis model from IRCAM. Pretrained checkpoints are downloaded automatically on first use.
+
+| Checkpoint       | Training Data          | Best For                                     |
+|------------------|------------------------|----------------------------------------------|
+| `musicnet`       | MusicNet dataset       | Classical instruments (piano, violin, cello) |
+| `sol_ordinario`  | IRCAM Studio OnLine    | Orchestral (standard techniques)             |
+| `sol_full`       | IRCAM Studio OnLine    | Full orchestral range                        |
+| `vintage`        | 80h vintage recordings | General music, diverse sources               |
+| `VCTK`           | VCTK speech corpus     | Speech and voice                             |
+| `percussion`     | Percussion samples     | Drums and percussion                         |
+
+**Specs:** 48kHz sample rate, 128-dim latent space, ~23ms latency
 
 ```python
-morpher = TimbreMorpher(model="rave", checkpoint="musicnet")
+morpher = TimbreMorpher(model="rave", checkpoint="vintage")
 ```
 
 ## Latent Space Visualization
