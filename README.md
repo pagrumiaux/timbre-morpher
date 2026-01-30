@@ -149,6 +149,8 @@ morpher = TimbreMorpher(model=MyCustomVAE())
 
 Timbre Morpher encodes audio into a continuous latent space using a variational autoencoder. By linearly interpolating between latent representations, we generate smooth transitions between different timbres.
 
+**Note:** The quality of the morphed output depends entirely on the underlying model's ability to reconstruct your audio. Pretrained models work best with audio similar to their training data. For optimal results, use a model trained on audio from the same domain as your source and target files.
+
 ```
 ┌──────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌──────────┐
 │  Source  │────▶│ Encoder │────▶│  Latent │────▶│ Decoder │────▶│ Morphed  │
