@@ -2,6 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)](https://pytorch.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Transform sounds smoothly from one timbre to another using latent space interpolation.
 
@@ -13,7 +14,7 @@ Transform sounds smoothly from one timbre to another using latent space interpol
 - Simple Python API
 - Audio utilities (resampling, crossfade, normalization)
 
-### Implemented Models
+### Implemented models
 
 | Model | Description |
 |-------|-------------|
@@ -27,7 +28,7 @@ cd timbre-morpher
 pip install -e .
 ```
 
-## Audio Demo
+## Audio demo
 
 Morphing from piano to violin using [`basic_morph.py`](examples/basic_morph.py):
 
@@ -53,7 +54,7 @@ Morphing from piano to violin using [`basic_morph.py`](examples/basic_morph.py):
 </table>
 <!-- markdownlint-enable MD033 -->
 
-## Quick Start
+## Quick start
 
 ### 1. Test RAVE model loading
 
@@ -102,7 +103,7 @@ morpher.save_sequence(result, "output/")
 morpher.save_concatenated(result, "morph_full.wav", crossfade_ms=50)
 ```
 
-## Available Models
+## Available models
 
 ### RAVE
 
@@ -123,7 +124,7 @@ morpher.save_concatenated(result, "morph_full.wav", crossfade_ms=50)
 morpher = TimbreMorpher(model="rave", checkpoint="vintage")
 ```
 
-## Latent Space Visualization
+## Latent space visualization
 
 ```python
 from timbre_morpher.utils.visualization import plot_trajectory, plot_latent_dimensions
@@ -138,7 +139,7 @@ plot_trajectory(trajectory, method="pca", save_path="trajectory.png")
 plot_latent_dimensions(trajectory, n_dims=8, save_path="latent_dims.png")
 ```
 
-## Custom Models
+## Custom models
 
 Implement your own encoder/decoder backend:
 
@@ -160,7 +161,7 @@ class MyCustomVAE(AudioVAE):
 morpher = TimbreMorpher(model=MyCustomVAE())
 ```
 
-## How It Works
+## How it works
 
 Timbre Morpher encodes audio into a continuous latent space using a variational autoencoder. By linearly interpolating between latent representations, we generate smooth transitions between different timbres.
 
