@@ -1,0 +1,37 @@
+[project]
+name = "timbre-morpher"
+version = "0.1.0"
+requires-python = ">=3.10"
+
+dependencies = [
+    "torch>=2.0.0",
+    "torchaudio>=2.0.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "librosa>=0.10.0",
+    "soundfile>=0.12.0",
+    "matplotlib>=3.7.0",
+    "tqdm>=4.65.0",
+    "einops>=0.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+]
+viz = [
+    "scikit-learn>=1.2.0",
+    "umap-learn>=0.5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
