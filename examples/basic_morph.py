@@ -16,13 +16,13 @@ def main():
     print("Timbre Morpher - Piano to Violin Morph")
 
     # Paths
-    assets_dir = Path(__file__).parent.parent / "assets" / "audio"
+    assets_dir = Path(__file__).parent / "audio"
     output_dir = Path("output/basic_morph")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Initialize morpher with RAVE model (musicnet is best for classical instruments)
-    print("\n1. Initializing TimbreMorpher with RAVE model (musicnet)...")
-    morpher = TimbreMorpher(model="rave", checkpoint="sol_full")
+    print("\n1. Initializing TimbreMorpher with RAVE model (vintage)...")
+    morpher = TimbreMorpher(model="rave", checkpoint="vintage")
     print(f"   Sample rate: {morpher.sample_rate} Hz")
 
     # Load audio files
