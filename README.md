@@ -32,27 +32,11 @@ pip install -e .
 
 Morphing from piano to violin using [`basic_morph.py`](examples/basic_morph.py):
 
-<!-- markdownlint-disable MD033 -->
-<table>
-  <tr>
-    <th>Source (Piano)</th>
-    <th>Target (Violin)</th>
-  </tr>
-  <tr>
-    <td><audio controls src="examples/audio/piano.wav"></audio></td>
-    <td><audio controls src="examples/audio/violin.wav"></audio></td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <th>Morphed (10 steps, concatenated with crossfade)</th>
-  </tr>
-  <tr>
-    <td><audio controls src="examples/audio/piano_to_violin_morph.wav"></audio></td>
-  </tr>
-</table>
-<!-- markdownlint-enable MD033 -->
+| Audio                            | File                                                                   |
+|----------------------------------|------------------------------------------------------------------------|
+| Source (Piano)                   | [piano.wav](examples/audio/piano.wav)                                  |
+| Target (Violin)                  | [violin.wav](examples/audio/violin.wav)                                |
+| Morphed (10 steps, concatenated) | [piano_to_violin_morph.wav](examples/audio/piano_to_violin_morph.wav)  |
 
 ## Quick start
 
