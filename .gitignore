@@ -47,7 +47,6 @@ coverage.xml
 
 # Model cache
 .cache/
-models/
 
 # Logs
 *.log
