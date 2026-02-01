@@ -19,10 +19,10 @@ model_name = "percussion"
 print(f"\nLoading '{model_name}' model (this will download ~50-100MB on first run)...")
 
 rave = RAVEWrapper.from_pretrained(model_name)
-print(f"Model loaded successfully!")
+print("Model loaded successfully!")
 
 # Check model attributes
-print(f"\nModel info:")
+print("\nModel info:")
 print(f"  Sample rate: {rave.sample_rate} Hz")
 print(f"  Latent dim: {rave.latent_dim}")
 
