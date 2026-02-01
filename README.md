@@ -19,6 +19,7 @@ Transform sounds smoothly from one timbre to another using latent space interpol
 | Model | Description |
 |-------|-------------|
 | [RAVE](https://github.com/acids-ircam/RAVE) | Realtime Audio Variational autoEncoder from IRCAM |
+| [EnCodec](https://github.com/facebookresearch/encodec) | High Fidelity Neural Audio Codec from Meta |
 
 ## Installation
 
@@ -28,9 +29,19 @@ cd timbre-morpher
 pip install -e .
 ```
 
+### Optional dependencies
+
+To use EnCodec models:
+
+```bash
+pip install -e ".[encodec]"
+# or
+pip install encodec
+```
+
 ## Audio demo
 
-Morphing from piano to violin using [`basic_morph.py`](examples/basic_morph.py):
+Morphing from piano to violin using [`morph.py`](scripts/morph.py):
 
 | Audio                            | File                                                                   |
 |----------------------------------|------------------------------------------------------------------------|
@@ -40,25 +51,42 @@ Morphing from piano to violin using [`basic_morph.py`](examples/basic_morph.py):
 
 ## Quick start
 
-### 1. Test RAVE model loading
+### 1. Test model loading
 
-First, verify that RAVE models download and run correctly:
+First, verify that models download and run correctly:
 
 ```bash
+# Test RAVE
 python examples/test_rave.py
+
+# Test EnCodec
+python examples/test_encodec.py
 ```
 
-This downloads a RAVE model and tests encode/decode with a synthetic sine wave.
+These scripts download models and test encode/decode with a synthetic sine wave.
 
-### 2. Run a basic morph
+### 2. Morph between audio files
 
-Morph between piano and violin samples:
+Use the command-line tool to morph between any two audio files:
 
 ```bash
-python examples/basic_morph.py
+# Basic usage with RAVE
+python examples/morph.py source.wav target.wav
+
+# Use EnCodec model
+python examples/morph.py source.wav target.wav --model encodec
+
+# Custom steps and output directory
+python examples/morph.py source.wav target.wav --steps 20 --output ./my_morph/
+
+# Save individual steps
+python examples/morph.py source.wav target.wav --save-individual
+
+# With visualization
+python examples/morph.py source.wav target.wav --visualize
 ```
 
-Results are saved to `output/basic_morph/`.
+Results are saved to `output/` by default.
 
 ### Python API
 
@@ -108,6 +136,18 @@ morpher.save_concatenated(result, "morph_full.wav", crossfade_ms=50)
 morpher = TimbreMorpher(model="rave", checkpoint="vintage")
 ```
 
+### EnCodec
+
+[EnCodec](https://github.com/facebookresearch/encodec) (Neural Audio Codec) is Meta's state-of-the-art neural audio compression model. It uses a streaming encoder-decoder architecture with residual vector quantization.
+
+**Specs:** 48kHz sample rate, configurable bandwidth (1.5-24 kbps), 128-dim latent space
+
+**Note:** EnCodec requires the `encodec` package. Install with: `pip install encodec`
+
+```python
+morpher = TimbreMorpher(model="encodec")
+```
+
 ## Latent space visualization
 
 ```python
@@ -152,15 +192,15 @@ Timbre Morpher encodes audio into a continuous latent space using a variational 
 **Note:** The quality of the morphed output depends entirely on the underlying model's ability to reconstruct your audio. Pretrained models work best with audio similar to their training data. For optimal results, use a model trained on audio from the same domain as your source and target files.
 
 ```
-┌──────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌──────────┐
+┌──────────┐      ┌─────────┐     ┌─────────┐      ┌─────────┐     ┌──────────┐
 │  Source  │────▶│ Encoder │────▶│  Latent │────▶│ Decoder │────▶│ Morphed  │
-│  Audio   │     │         │     │  Interp │     │         │     │  Audio   │
-└──────────┘     └─────────┘     └─────────┘     └─────────┘     └──────────┘
-                                      ▲
-┌──────────┐     ┌─────────┐          │
+│  Audio   │      │         │     │  Interp │      │         │     │  Audio   │
+└──────────┘      └─────────┘     └─────────┘      └─────────┘     └──────────┘
+                                       ▲
+┌──────────┐      ┌─────────┐          │
 │  Target  │────▶│ Encoder │──────────┘
-│  Audio   │     │         │
-└──────────┘     └─────────┘
+│  Audio   │      │         │
+└──────────┘      └─────────┘
 ```
 
 ## Roadmap
@@ -168,10 +208,10 @@ Timbre Morpher encodes audio into a continuous latent space using a variational 
 - [x] Core morphing engine
 - [x] RAVE integration
 - [x] Latent space visualization
+- [x] EnCodec integration
 - [ ] Additional interpolation methods (SLERP, Bezier)
 - [ ] Pitch preservation
 - [ ] Other autoencoder models:
-  - [EnCodec](https://github.com/facebookresearch/encodec) (Meta)
   - [DAC](https://github.com/descriptinc/descript-audio-codec) (Descript Audio Codec)
   - [AudioMAE](https://github.com/facebookresearch/AudioMAE)
 - [ ] CLI interface

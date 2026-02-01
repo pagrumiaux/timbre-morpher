@@ -12,6 +12,7 @@ import torch
 from timbre_morpher.core.interpolator import Interpolator
 from timbre_morpher.models.base import AudioVAE
 from timbre_morpher.models.rave_wrapper import RAVEWrapper, MockRAVE
+from timbre_morpher.models.encodec_wrapper import EncodecWrapper
 from timbre_morpher.utils.audio import (
     save_audio,
     match_length,
@@ -55,7 +56,7 @@ class TimbreMorpher:
 
     def __init__(
         self,
-        model: AudioVAE | Literal["rave", "mock"] | None = None,
+        model: AudioVAE | Literal["rave", "encodec", "mock"] | None = None,
         checkpoint: str = "vintage",
         config: MorphConfig | None = None,
         device: str | torch.device | None = None,
@@ -66,9 +67,12 @@ class TimbreMorpher:
             model: Model backend - can be:
                 - An AudioVAE instance
                 - "rave" to use RAVE with specified checkpoint
+                - "encodec" to use EnCodec (48kHz, high quality)
                 - "mock" for testing without real model
                 - None defaults to "mock" (for safety)
-            checkpoint: Checkpoint name/path for RAVE model.
+            checkpoint: Checkpoint name/path for model.
+                For RAVE: "vintage", "musicnet", "VCTK", etc.
+                For EnCodec: "encodec_48khz"
             config: Morphing configuration.
             device: Device to use (auto-detected if None).
         """
@@ -82,12 +86,16 @@ class TimbreMorpher:
         elif model == "rave":
             logger.info(f"Loading RAVE model: {checkpoint}")
             self._model = RAVEWrapper.from_pretrained(checkpoint)
+        elif model == "encodec":
+            checkpoint = checkpoint if checkpoint != "vintage" else "encodec_48khz"
+            logger.info(f"Loading EnCodec model: {checkpoint}")
+            self._model = EncodecWrapper.from_pretrained(checkpoint)
         elif isinstance(model, AudioVAE):
             self._model = model
         else:
             raise ValueError(
                 f"Invalid model specification: {model}. "
-                "Use 'rave', 'mock', or an AudioVAE instance."
+                "Use 'rave', 'encodec', 'mock', or an AudioVAE instance."
             )
 
         self._model = self._model.to(self.device)

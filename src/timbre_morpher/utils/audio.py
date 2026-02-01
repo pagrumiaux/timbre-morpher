@@ -79,7 +79,8 @@ def save_audio(
 
     # Use soundfile (more reliable than torchaudio.save)
     # soundfile expects (samples, channels) format
-    audio_np = audio.detach().numpy().T
+    # Move to CPU if needed before converting to numpy
+    audio_np = audio.detach().cpu().numpy().T
     sf.write(str(path), audio_np, sample_rate)
 
 

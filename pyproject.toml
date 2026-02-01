@@ -13,13 +13,16 @@ dependencies = [
     "matplotlib>=3.7.0",
     "tqdm>=4.65.0",
     "einops>=0.6.0",
-    "pytest>=9.0.2",
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "ruff>=0.1.0",
     "scikit-learn>=1.2.0",
     "umap-learn>=0.5.0",
 ]
+
+[project.optional-dependencies]
+encodec = ["encodec>=0.1.1"]
+all = ["encodec>=0.1.1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
