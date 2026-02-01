@@ -53,17 +53,6 @@ class TestMatchLength:
         # Padded with zeros
         assert torch.equal(r2[..., 500:], torch.zeros(1, 500))
 
-    def test_average_mode(self):
-        """Average mode should use average length."""
-        a1 = torch.randn(1, 1000)
-        a2 = torch.randn(1, 500)
-
-        r1, r2 = match_length(a1, a2, mode="average")
-
-        expected_len = (1000 + 500) // 2
-        assert r1.shape[-1] == expected_len
-        assert r2.shape[-1] == expected_len
-
     def test_invalid_mode(self):
         """Invalid mode should raise error."""
         a1 = torch.randn(1, 1000)

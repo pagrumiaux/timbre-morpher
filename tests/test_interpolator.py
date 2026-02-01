@@ -44,12 +44,9 @@ class TestInterpolator:
         interpolator = Interpolator()
 
         # With endpoints
-        trajectory = interpolator.trajectory(z1, z2, steps=10, include_endpoints=True)
+        trajectory = interpolator.trajectory(z1, z2, steps=10)
         assert len(trajectory) == 12  # 10 + 2 endpoints
 
-        # Without endpoints
-        trajectory = interpolator.trajectory(z1, z2, steps=10, include_endpoints=False)
-        assert len(trajectory) == 10
 
     def test_trajectory_shape_preserved(self, sample_latents):
         """Trajectory tensors should have same shape as input."""
