@@ -11,8 +11,6 @@ Transform sounds smoothly from one timbre to another using latent space interpol
 - Morph between two audio files (piano → violin, voice → synth, etc.)
 - Model-agnostic architecture: designed to work with any audio autoencoder
 - Latent space trajectory visualization (PCA, t-SNE, UMAP)
-- Simple Python API
-- Audio utilities (resampling, crossfade, normalization)
 
 ### Implemented models
 
@@ -67,23 +65,23 @@ These scripts download models and test encode/decode with a synthetic sine wave.
 
 ### 2. Morph between audio files
 
-Use the command-line tool to morph between any two audio files:
+Use the `morph.py` script to morph between any two audio files:
 
 ```bash
 # Basic usage with RAVE
-python examples/morph.py source.wav target.wav
+python scripts/morph.py source.wav target.wav
 
 # Use EnCodec model
-python examples/morph.py source.wav target.wav --model encodec
+python scripts/morph.py source.wav target.wav --model encodec
 
 # Custom steps and output directory
-python examples/morph.py source.wav target.wav --steps 20 --output ./my_morph/
+python scripts/morph.py source.wav target.wav --steps 20 --output ./my_morph/
 
 # Save individual steps
-python examples/morph.py source.wav target.wav --save-individual
+python scripts/morph.py source.wav target.wav --save-individual
 
 # With visualization
-python examples/morph.py source.wav target.wav --visualize
+python scripts/morph.py source.wav target.wav --visualize
 ```
 
 Results are saved to `output/` by default.
@@ -209,10 +207,9 @@ Timbre Morpher encodes audio into a continuous latent space using a variational 
 - [x] RAVE integration
 - [x] Latent space visualization
 - [x] EnCodec integration
-- [ ] Additional interpolation methods (SLERP, Bezier)
-- [ ] Pitch preservation
 - [ ] Other autoencoder models:
   - [DAC](https://github.com/descriptinc/descript-audio-codec) (Descript Audio Codec)
   - [AudioMAE](https://github.com/facebookresearch/AudioMAE)
+- [ ] Enforce pitch preservation
 - [ ] CLI interface
 - [ ] VST/AU plugin
