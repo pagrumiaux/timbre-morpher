@@ -13,6 +13,7 @@ from timbre_morpher.core.interpolator import Interpolator
 from timbre_morpher.models.base import AudioVAE
 from timbre_morpher.models.rave_wrapper import RAVEWrapper, MockRAVE
 from timbre_morpher.models.encodec_wrapper import EncodecWrapper
+from timbre_morpher.models.dac_wrapper import DACWrapper
 from timbre_morpher.utils.audio import (
     save_audio,
     match_length,
@@ -56,7 +57,7 @@ class TimbreMorpher:
 
     def __init__(
         self,
-        model: AudioVAE | Literal["rave", "encodec", "mock"] | None = None,
+        model: AudioVAE | Literal["rave", "encodec", "dac", "mock"] | None = None,
         checkpoint: str = "vintage",
         config: MorphConfig | None = None,
         device: str | torch.device | None = None,
@@ -68,11 +69,13 @@ class TimbreMorpher:
                 - An AudioVAE instance
                 - "rave" to use RAVE with specified checkpoint
                 - "encodec" to use EnCodec (48kHz, high quality)
+                - "dac" to use DAC (44.1kHz, optimized for music)
                 - "mock" for testing without real model
                 - None defaults to "mock" (for safety)
             checkpoint: Checkpoint name/path for model.
                 For RAVE: "vintage", "musicnet", "VCTK", etc.
                 For EnCodec: "encodec_48khz"
+                For DAC: "dac_16khz", "dac_24khz", or "dac_44khz"
             config: Morphing configuration.
             device: Device to use (auto-detected if None).
         """
@@ -90,12 +93,16 @@ class TimbreMorpher:
             checkpoint = checkpoint if checkpoint != "vintage" else "encodec_48khz"
             logger.info(f"Loading EnCodec model: {checkpoint}")
             self._model = EncodecWrapper.from_pretrained(checkpoint)
+        elif model == "dac":
+            checkpoint = checkpoint if checkpoint != "vintage" else "dac_44khz"
+            logger.info(f"Loading DAC model: {checkpoint}")
+            self._model = DACWrapper.from_pretrained(checkpoint)
         elif isinstance(model, AudioVAE):
             self._model = model
         else:
             raise ValueError(
                 f"Invalid model specification: {model}. "
-                "Use 'rave', 'encodec', 'mock', or an AudioVAE instance."
+                "Use 'rave', 'encodec', 'dac', 'mock', or an AudioVAE instance."
             )
 
         self._model = self._model.to(self.device)

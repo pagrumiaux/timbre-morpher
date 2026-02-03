@@ -1,25 +1,6 @@
 #!/usr/bin/env python3
 """
 Command-line tool for morphing between two audio files using neural audio codecs.
-
-Usage examples:
-    # Basic morph with default settings (RAVE)
-    python morph.py source.wav target.wav
-
-    # Use EnCodec model
-    python morph.py source.wav target.wav --model encodec
-
-    # Custom number of steps and output directory
-    python morph.py source.wav target.wav --steps 20 --output ./my_morph/
-
-    # Save as individual files instead of concatenated
-    python morph.py source.wav target.wav --save-individual
-
-    # Use specific RAVE checkpoint
-    python morph.py source.wav target.wav --model rave --checkpoint vintage
-
-    # EnCodec with custom bandwidth
-    python morph.py source.wav target.wav --model encodec --bandwidth 6.0
 """
 
 import argparse
@@ -51,6 +32,7 @@ def parse_args() -> argparse.Namespace:
 Examples:
   %(prog)s piano.wav violin.wav
   %(prog)s source.wav target.wav --model encodec --steps 15
+  %(prog)s piano.wav synth.wav --model dac --checkpoint dac_44khz
   %(prog)s audio1.wav audio2.wav --save-individual --output ./results/
   %(prog)s voice1.wav voice2.wav --model rave --checkpoint VCTK
         """
@@ -73,7 +55,7 @@ Examples:
     model_group.add_argument(
         '--model', '-m',
         type=str,
-        choices=['rave', 'encodec', 'mock'],
+        choices=['rave', 'encodec', 'dac'],
         default='rave',
         help='Model to use for morphing (default: rave)'
     )
@@ -82,7 +64,8 @@ Examples:
         type=str,
         default=None,
         help='Model checkpoint name. For RAVE: vintage, musicnet, VCTK, etc. '
-             'For EnCodec: encodec_48khz (default for each model if not specified)'
+             'For EnCodec: encodec_48khz. For DAC: dac_16khz, dac_24khz, dac_44khz '
+             '(default for each model if not specified)'
     )
     model_group.add_argument(
         '--bandwidth',
@@ -206,6 +189,8 @@ def main() -> int:
             model_kwargs['checkpoint'] = 'vintage'
         elif args.model == 'encodec':
             model_kwargs['checkpoint'] = 'encodec_48khz'
+        elif args.model == 'dac':
+            model_kwargs['checkpoint'] = 'dac_44khz'
 
         morpher = TimbreMorpher(**model_kwargs)
 
