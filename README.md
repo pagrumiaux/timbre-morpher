@@ -223,21 +223,11 @@ morpher = TimbreMorpher(model=MyCustomVAE())
 
 ## How it works
 
-Timbre Morpher encodes audio into a continuous latent space using a variational autoencoder. By linearly interpolating between latent representations, we generate smooth transitions between different timbres.
+Both the source and target audio are encoded into a continuous latent space by the same model. This produces two points in that space — one representing the source timbre, one representing the target. We then walk a straight line between those two points, sampling intermediate latent vectors along the way. Each intermediate vector is decoded back to audio, producing one step of the morph. String all the steps together and you get a smooth timbre transition.
 
-**Note:** The quality of the morphed output depends entirely on the underlying model's ability to reconstruct your audio. Pretrained models work best with audio similar to their training data. For optimal results, use a model trained on audio from the same domain as your source and target files.
+For codecs that use discrete quantisation internally (EnCodec, DAC), we bypass the quantiser and work directly with the continuous encoder output. This keeps the latent space smooth and interpolation-friendly, at the cost of some reconstruction quality compared to the quantised path — a tradeoff worth making for morphing.
 
-```
-┌──────────┐      ┌─────────┐     ┌─────────┐      ┌─────────┐     ┌──────────┐
-│  Source  │────▶│ Encoder │────▶│  Latent │────▶│ Decoder │────▶│ Morphed  │
-│  Audio   │      │         │     │  Interp │      │         │     │  Audio   │
-└──────────┘      └─────────┘     └─────────┘      └─────────┘     └──────────┘
-                                       ▲
-┌──────────┐      ┌─────────┐          │
-│  Target  │────▶│ Encoder │──────────┘
-│  Audio   │      │         │
-└──────────┘      └─────────┘
-```
+**Note:** The quality of the output depends on the underlying model's ability to reconstruct your audio. Pretrained models work best with audio similar to their training data. For optimal results, pick a model trained on the same domain as your source and target.
 
 ## Roadmap
 
