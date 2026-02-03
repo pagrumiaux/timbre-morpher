@@ -18,6 +18,7 @@ Transform sounds smoothly from one timbre to another using latent space interpol
 |-------|-------------|
 | [RAVE](https://github.com/acids-ircam/RAVE) | Realtime Audio Variational autoEncoder from IRCAM |
 | [EnCodec](https://github.com/facebookresearch/encodec) | High Fidelity Neural Audio Codec from Meta |
+| [DAC](https://github.com/descriptinc/descript-audio-codec) | High-Fidelity Audio Codec from Descript |
 
 ## Installation
 
@@ -35,6 +36,20 @@ To use EnCodec models:
 pip install -e ".[encodec]"
 # or
 pip install encodec
+```
+
+To use DAC models:
+
+```bash
+pip install -e ".[dac]"
+# or
+pip install descript-audio-codec
+```
+
+To install all optional backends at once:
+
+```bash
+pip install -e ".[all]"
 ```
 
 ## Audio demo
@@ -59,6 +74,9 @@ python examples/test_rave.py
 
 # Test EnCodec
 python examples/test_encodec.py
+
+# Test DAC
+python examples/test_dac.py
 ```
 
 These scripts download models and test encode/decode with a synthetic sine wave.
@@ -73,6 +91,9 @@ python scripts/morph.py source.wav target.wav
 
 # Use EnCodec model
 python scripts/morph.py source.wav target.wav --model encodec
+
+# Use DAC model (44.1kHz, good for music)
+python scripts/morph.py source.wav target.wav --model dac
 
 # Custom steps and output directory
 python scripts/morph.py source.wav target.wav --steps 20 --output ./my_morph/
@@ -146,6 +167,23 @@ morpher = TimbreMorpher(model="rave", checkpoint="vintage")
 morpher = TimbreMorpher(model="encodec")
 ```
 
+### DAC
+
+[DAC](https://github.com/descriptinc/descript-audio-codec) (Descript Audio Codec) is a high-fidelity neural audio codec optimised for music at 44.1kHz. Like EnCodec it uses residual vector quantisation internally, but for morphing we bypass the quantiser and interpolate in the continuous pre-quantisation latent space.
+
+| Checkpoint    | Sample Rate | Bitrate |
+|---------------|-------------|---------|
+| `dac_44khz`   | 44.1 kHz    | 8 kbps  |
+| `dac_24khz`   | 24 kHz      | 8 kbps  |
+| `dac_16khz`   | 16 kHz      | 8 kbps  |
+
+**Note:** DAC requires the `descript-audio-codec` package. Install with: `pip install descript-audio-codec`
+
+```python
+morpher = TimbreMorpher(model="dac")                          # 44.1kHz (default)
+morpher = TimbreMorpher(model="dac", checkpoint="dac_24khz")  # 24kHz
+```
+
 ## Latent space visualization
 
 ```python
@@ -207,8 +245,8 @@ Timbre Morpher encodes audio into a continuous latent space using a variational 
 - [x] RAVE integration
 - [x] Latent space visualization
 - [x] EnCodec integration
+- [x] DAC integration
 - [ ] Other autoencoder models:
-  - [DAC](https://github.com/descriptinc/descript-audio-codec) (Descript Audio Codec)
   - [AudioMAE](https://github.com/facebookresearch/AudioMAE)
 - [ ] Enforce pitch preservation
 - [ ] CLI interface
