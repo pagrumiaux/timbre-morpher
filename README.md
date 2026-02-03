@@ -45,7 +45,7 @@ Morphing from piano to violin using [`morph.py`](scripts/morph.py):
 |----------------------------------|------------------------------------------------------------------------|
 | Source (Piano)                   | [piano.wav](examples/audio/piano.wav)                                  |
 | Target (Violin)                  | [violin.wav](examples/audio/violin.wav)                                |
-| Morphed (10 steps, concatenated) | [piano_to_violin_morph.wav](examples/audio/piano_to_violin_morph.wav)  |
+| Morphed (10 steps, concatenated, DAC model) | [piano_to_violin_morph.wav](examples/audio/piano_to_violin_morph.wav)  |
 
 ## Quick start
 
