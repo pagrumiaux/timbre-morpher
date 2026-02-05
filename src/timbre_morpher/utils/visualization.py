@@ -14,7 +14,7 @@ from matplotlib.figure import Figure
 
 
 def plot_trajectory(
-    latents: list[torch.Tensor],
+    latents: list[torch.Tensor] | torch.Tensor,
     method: Literal["pca", "tsne", "umap"] = "pca",
     dimensions: Literal[2, 3] = 2,
     title: str = "Morphing trajectory in latent space",
