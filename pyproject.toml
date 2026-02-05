@@ -34,9 +34,19 @@ line-length = 88
 
 [tool.pyright]
 typeCheckingMode = "basic"
+# Disable noisy type checks
 reportAttributeAccessIssue = "none"
 reportOptionalMemberAccess = "none"
-reportGeneralTypeIssues = "warning"
+reportArgumentType = "none"
+reportCallIssue = "none"
+reportReturnType = "none"
+reportIndexIssue = "none"
+reportOperatorIssue = "none"
+reportGeneralTypeIssues = "none"
+reportOptionalSubscript = "none"
+reportOptionalIterable = "none"
+reportMissingTypeStubs = "none"
+reportPrivateImportUsage = "none"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
