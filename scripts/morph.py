@@ -27,15 +27,6 @@ def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
         description='Morph between two audio files using neural audio codecs',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  %(prog)s piano.wav violin.wav
-  %(prog)s source.wav target.wav --model encodec --steps 15
-  %(prog)s piano.wav synth.wav --model dac --checkpoint dac_44khz
-  %(prog)s audio1.wav audio2.wav --save-individual --output ./results/
-  %(prog)s voice1.wav voice2.wav --model rave --checkpoint VCTK
-        """
     )
 
     # Required arguments
@@ -55,7 +46,7 @@ Examples:
     model_group.add_argument(
         '--model', '-m',
         type=str,
-        choices=['rave', 'encodec', 'dac'],
+        choices=['rave', 'encodec', 'dac', 'stable-audio'],
         default='rave',
         help='Model to use for morphing (default: rave)'
     )
@@ -64,7 +55,8 @@ Examples:
         type=str,
         default=None,
         help='Model checkpoint name. For RAVE: vintage, musicnet, VCTK, etc. '
-             'For EnCodec: encodec_48khz. For DAC: dac_16khz, dac_24khz, dac_44khz '
+             'For EnCodec: encodec_48khz. For DAC: dac_16khz, dac_24khz, dac_44khz. '
+             'For Stable Audio: stable-audio-open-1.0 '
              '(default for each model if not specified)'
     )
     model_group.add_argument(
@@ -191,6 +183,8 @@ def main() -> int:
             model_kwargs['checkpoint'] = 'encodec_48khz'
         elif args.model == 'dac':
             model_kwargs['checkpoint'] = 'dac_44khz'
+        elif args.model == 'stable-audio':
+            model_kwargs['checkpoint'] = 'stable-audio-open-1.0'
 
         morpher = TimbreMorpher(**model_kwargs)
 

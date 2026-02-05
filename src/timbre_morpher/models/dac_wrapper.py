@@ -42,10 +42,6 @@ class DACConfig(ModelConfig):
 
 class DACWrapper(AudioVAE):
     """Wrapper for Descript Audio Codec (DAC) models.
-
-    Like EnCodec, DAC uses Residual Vector Quantization (RVQ). For morphing
-    we bypass quantization entirely by calling the encoder/decoder directly,
-    giving us a continuous latent space suitable for interpolation.
     """
 
     def __init__(

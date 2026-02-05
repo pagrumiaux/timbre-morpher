@@ -14,6 +14,7 @@ from timbre_morpher.models.base import AudioVAE
 from timbre_morpher.models.rave_wrapper import RAVEWrapper, MockRAVE
 from timbre_morpher.models.encodec_wrapper import EncodecWrapper
 from timbre_morpher.models.dac_wrapper import DACWrapper
+from timbre_morpher.models.stable_audio_wrapper import StableAudioWrapper
 from timbre_morpher.utils.audio import (
     save_audio,
     match_length,
@@ -57,7 +58,7 @@ class TimbreMorpher:
 
     def __init__(
         self,
-        model: AudioVAE | Literal["rave", "encodec", "dac", "mock"] | None = None,
+        model: AudioVAE | Literal["rave", "encodec", "dac", "stable-audio", "mock"] | None = None,
         checkpoint: str = "vintage",
         config: MorphConfig | None = None,
         device: str | torch.device | None = None,
@@ -70,12 +71,14 @@ class TimbreMorpher:
                 - "rave" to use RAVE with specified checkpoint
                 - "encodec" to use EnCodec (48kHz, high quality)
                 - "dac" to use DAC (44.1kHz, optimized for music)
+                - "stable-audio" to use Stable Audio Open VAE (44.1kHz stereo)
                 - "mock" for testing without real model
                 - None defaults to "mock" (for safety)
             checkpoint: Checkpoint name/path for model.
                 For RAVE: "vintage", "musicnet", "VCTK", etc.
                 For EnCodec: "encodec_48khz"
                 For DAC: "dac_16khz", "dac_24khz", or "dac_44khz"
+                For Stable Audio: "stable-audio-open-1.0"
             config: Morphing configuration.
             device: Device to use (auto-detected if None).
         """
@@ -97,12 +100,16 @@ class TimbreMorpher:
             checkpoint = checkpoint if checkpoint != "vintage" else "dac_44khz"
             logger.info(f"Loading DAC model: {checkpoint}")
             self._model = DACWrapper.from_pretrained(checkpoint)
+        elif model == "stable-audio":
+            checkpoint = checkpoint if checkpoint != "vintage" else "stable-audio-open-1.0"
+            logger.info(f"Loading Stable Audio VAE: {checkpoint}")
+            self._model = StableAudioWrapper.from_pretrained(checkpoint)
         elif isinstance(model, AudioVAE):
             self._model = model
         else:
             raise ValueError(
                 f"Invalid model specification: {model}. "
-                "Use 'rave', 'encodec', 'dac', 'mock', or an AudioVAE instance."
+                "Use 'rave', 'encodec', 'dac', 'stable-audio', 'mock', or an AudioVAE instance."
             )
 
         self._model = self._model.to(self.device)
