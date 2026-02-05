@@ -23,13 +23,20 @@ dependencies = [
 [project.optional-dependencies]
 encodec = ["encodec>=0.1.1"]
 dac = ["descript-audio-codec>=1.0.0"]
-all = ["encodec>=0.1.1", "descript-audio-codec>=1.0.0"]
+stable-audio = ["diffusers>=0.28.0", "transformers>=4.40.0"]
+all = ["encodec>=0.1.1", "descript-audio-codec>=1.0.0", "diffusers>=0.28.0", "transformers>=4.40.0"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.ruff]
 line-length = 88
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportAttributeAccessIssue = "none"
+reportOptionalMemberAccess = "none"
+reportGeneralTypeIssues = "warning"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

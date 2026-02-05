@@ -19,6 +19,7 @@ Transform sounds smoothly from one timbre to another using latent space interpol
 | [RAVE](https://github.com/acids-ircam/RAVE) | Realtime Audio Variational autoEncoder from IRCAM |
 | [EnCodec](https://github.com/facebookresearch/encodec) | High Fidelity Neural Audio Codec from Meta |
 | [DAC](https://github.com/descriptinc/descript-audio-codec) | High-Fidelity Audio Codec from Descript |
+| [Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0) | KL-regularized VAE from Stability AI |
 
 ## Installation
 
@@ -44,6 +45,14 @@ To use DAC models:
 pip install -e ".[dac]"
 # or
 pip install descript-audio-codec
+```
+
+To use Stable Audio models:
+
+```bash
+pip install -e ".[stable-audio]"
+# or
+pip install diffusers transformers
 ```
 
 To install all optional backends at once:
@@ -77,6 +86,9 @@ python examples/test_encodec.py
 
 # Test DAC
 python examples/test_dac.py
+
+# Test Stable Audio
+python examples/test_stable_audio.py
 ```
 
 These scripts download models and test encode/decode with a synthetic sine wave.
@@ -184,6 +196,18 @@ morpher = TimbreMorpher(model="dac")                          # 44.1kHz (default
 morpher = TimbreMorpher(model="dac", checkpoint="dac_24khz")  # 24kHz
 ```
 
+### Stable Audio Open
+
+[Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0) is a text-to-audio generation model from Stability AI. For morphing, we use its KL-regularized variational autoencoder with continuous latent space, making it ideal for interpolation.
+
+**Specs:** 44.1 kHz stereo, 64-dim latent space, 2048 hop length (~46ms frames)
+
+**Note:** Stable Audio requires the `diffusers` and `transformers` packages. Install with: `pip install diffusers transformers`
+
+```python
+morpher = TimbreMorpher(model="stable-audio")  # Uses stable-audio-open-1.0
+```
+
 ## Latent space visualization
 
 ```python
@@ -236,8 +260,7 @@ For codecs that use discrete quantisation internally (EnCodec, DAC), we bypass t
 - [x] Latent space visualization
 - [x] EnCodec integration
 - [x] DAC integration
-- [ ] Other autoencoder models:
-  - [AudioMAE](https://github.com/facebookresearch/AudioMAE)
+- [x] Stable Audio Open integration
 - [ ] Enforce pitch preservation
 - [ ] CLI interface
 - [ ] VST/AU plugin
