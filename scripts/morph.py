@@ -46,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     model_group.add_argument(
         '--model', '-m',
         type=str,
-        choices=['rave', 'encodec', 'dac', 'stable-audio'],
+        choices=['rave', 'encodec', 'dac', 'stable-audio', 'music2latent'],
         default='rave',
         help='Model to use for morphing (default: rave)'
     )
@@ -56,7 +56,8 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help='Model checkpoint name. For RAVE: vintage, musicnet, VCTK, etc. '
              'For EnCodec: encodec_48khz. For DAC: dac_16khz, dac_24khz, dac_44khz. '
-             'For Stable Audio: stable-audio-open-1.0 '
+             'For Stable Audio: stable-audio-open-1.0. '
+             'For music2latent: auto-downloaded '
              '(default for each model if not specified)'
     )
     model_group.add_argument(
@@ -185,6 +186,8 @@ def main() -> int:
             model_kwargs['checkpoint'] = 'dac_44khz'
         elif args.model == 'stable-audio':
             model_kwargs['checkpoint'] = 'stable-audio-open-1.0'
+        elif args.model == 'music2latent':
+            model_kwargs['checkpoint'] = 'music2latent'
 
         morpher = TimbreMorpher(**model_kwargs)
 

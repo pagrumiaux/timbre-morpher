@@ -15,6 +15,7 @@ from timbre_morpher.models.rave_wrapper import RAVEWrapper, MockRAVE
 from timbre_morpher.models.encodec_wrapper import EncodecWrapper
 from timbre_morpher.models.dac_wrapper import DACWrapper
 from timbre_morpher.models.stable_audio_wrapper import StableAudioWrapper
+from timbre_morpher.models.music2latent_wrapper import Music2LatentWrapper
 from timbre_morpher.utils.audio import (
     save_audio,
     match_length,
@@ -58,7 +59,7 @@ class TimbreMorpher:
 
     def __init__(
         self,
-        model: AudioVAE | Literal["rave", "encodec", "dac", "stable-audio", "mock"] | None = None,
+        model: AudioVAE | Literal["rave", "encodec", "dac", "stable-audio", "music2latent", "mock"] | None = None,
         checkpoint: str = "vintage",
         config: MorphConfig | None = None,
         device: str | torch.device | None = None,
@@ -72,6 +73,7 @@ class TimbreMorpher:
                 - "encodec" to use EnCodec (48kHz, high quality)
                 - "dac" to use DAC (44.1kHz, optimized for music)
                 - "stable-audio" to use Stable Audio Open VAE (44.1kHz stereo)
+                - "music2latent" to use music2latent Consistency AE (44.1kHz mono)
                 - "mock" for testing without real model
                 - None defaults to "mock" (for safety)
             checkpoint: Checkpoint name/path for model.
@@ -104,12 +106,15 @@ class TimbreMorpher:
             checkpoint = checkpoint if checkpoint != "vintage" else "stable-audio-open-1.0"
             logger.info(f"Loading Stable Audio VAE: {checkpoint}")
             self._model = StableAudioWrapper.from_pretrained(checkpoint)
+        elif model == "music2latent":
+            logger.info("Loading music2latent Consistency AE...")
+            self._model = Music2LatentWrapper.from_pretrained()
         elif isinstance(model, AudioVAE):
             self._model = model
         else:
             raise ValueError(
                 f"Invalid model specification: {model}. "
-                "Use 'rave', 'encodec', 'dac', 'stable-audio', 'mock', or an AudioVAE instance."
+                "Use 'rave', 'encodec', 'dac', 'stable-audio', 'music2latent', 'mock', or an AudioVAE instance."
             )
 
         self._model = self._model.to(self.device)

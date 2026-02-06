@@ -20,6 +20,7 @@ Transform sounds smoothly from one timbre to another using latent space interpol
 | [EnCodec](https://github.com/facebookresearch/encodec) | High Fidelity Neural Audio Codec from Meta |
 | [DAC](https://github.com/descriptinc/descript-audio-codec) | High-Fidelity Audio Codec from Descript |
 | [Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0) | KL-regularized VAE from Stability AI |
+| [music2latent](https://github.com/SonyCSLParis/music2latent) | Consistency Autoencoder from Sony CSL |
 
 ## Installation
 
@@ -53,6 +54,14 @@ To use Stable Audio models:
 pip install -e ".[stable-audio]"
 # or
 pip install diffusers transformers
+```
+
+To use music2latent:
+
+```bash
+pip install -e ".[music2latent]"
+# or
+pip install music2latent
 ```
 
 To install all optional backends at once:
@@ -89,6 +98,9 @@ python examples/test_dac.py
 
 # Test Stable Audio
 python examples/test_stable_audio.py
+
+# Test music2latent
+python examples/test_music2latent.py
 ```
 
 These scripts download models and test encode/decode with a synthetic sine wave.
@@ -208,6 +220,18 @@ morpher = TimbreMorpher(model="dac", checkpoint="dac_24khz")  # 24kHz
 morpher = TimbreMorpher(model="stable-audio")  # Uses stable-audio-open-1.0
 ```
 
+### music2latent
+
+[music2latent](https://github.com/SonyCSLParis/music2latent) is a Consistency Autoencoder from Sony CSL. It uses the consistency model framework for single-step decoding, producing a continuous latent space without KL regularization or vector quantization.
+
+**Specs:** 44.1 kHz mono, 64-dim latent space, ~10Hz temporal resolution (~4410 hop length)
+
+**Note:** Requires the `music2latent` package. Install with: `pip install music2latent`
+
+```python
+morpher = TimbreMorpher(model="music2latent")
+```
+
 ## Latent space visualization
 
 ```python
@@ -261,6 +285,7 @@ For codecs that use discrete quantisation internally (EnCodec, DAC), we bypass t
 - [x] EnCodec integration
 - [x] DAC integration
 - [x] Stable Audio Open integration
+- [x] music2latent integration
 - [ ] Enforce pitch preservation
 - [ ] CLI interface
 - [ ] VST/AU plugin
